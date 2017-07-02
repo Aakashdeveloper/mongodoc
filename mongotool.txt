@@ -1,0 +1,24 @@
+Bson Dump
+
+bsondump path> new.json
+bsondump dump/april/try1.bson > try1.json
+mongorestore --collection try3 --db april dump/april/first.bson
+
+Mongoperf
+>mongoperf<C:\Users\AAKASH\Desktop\testcfg
+
+GrifFS
+
+>mongofiles.exe -d video3 put "D:\downloads\a.mp4"
+db.fs.files.find().pretty()
+
+
+mongoperf is a performance testing tool. the initial tests are of disk subsystem
+
+Config file to start database
+>dbpath = C:\data
+port=3000;
+logpath=C:\Users\AAKASH\Desktop\aakash.log
+
+mongod --config C:\Users\AAKASH\Desktop\start.cfg
+

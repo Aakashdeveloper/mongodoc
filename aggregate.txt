@@ -1,0 +1,70 @@
+
+$sum
+$avg
+$min
+$max
+$push
+$first
+$last
+$addtoSet
+
+db.emp.count()
+
+db.emp.count({name:"aakash"})
+
+db.emp.distinct("name").length
+
+db.record.insert([{a:1,count:1},{a:1,count:2},{a:2,count:1},{a:2,count:1}])
+
+db.record.group({key:{a:1}, cond:{a:{$lt:3}}, reduce:function(cur, result)(result.count += cur.count), initial:{count:0}})
+
+
+//
+
+db.product.insert({ _id: 1, cust_id: "abc1", ord_date: ISODate("2012-11-02T17:04:11.102Z"), status: "A", amount: 50 })
+db.product.insert({ _id: 2, cust_id: "xyz1", ord_date: ISODate("2013-10-01T17:04:11.102Z"), status: "A", amount: 100 })
+db.product.insert({ _id: 3, cust_id: "xyz1", ord_date: ISODate("2013-10-12T17:04:11.102Z"), status: "D", amount: 25 })
+db.product.insert({ _id: 4, cust_id: "xyz1", ord_date: ISODate("2013-10-11T17:04:11.102Z"), status: "D", amount: 125 })
+db.product.insert({ _id: 5, cust_id: "abc1", ord_date: ISODate("2013-11-12T17:04:11.102Z"), status: "A", amount: 25 })
+
+db.product.aggregate([
+                     { $match: { status: "A" } },
+                     { $group: { _id: "$cust_id", total: { $sum: "$amount" } }},       
+                     { $sort: { total: -1 } }
+                   ])
+           
+db.order.insert({ "_id" : 1, "item" : "abc", "price" : 10, "quantity" : 2, "date" : ISODate("2014-01-01T08:00:00Z") })
+db.order.insert({ "_id" : 2, "item" : "jkl", "price" : 20, "quantity" : 1, "date" : ISODate("2014-02-03T09:00:00Z") })
+db.order.insert({ "_id" : 3, "item" : "xyz", "price" : 5, "quantity" : 5, "date" : ISODate("2014-02-03T09:05:00Z") })
+db.order.insert({ "_id" : 4, "item" : "abc", "price" : 10, "quantity" : 10, "date" : ISODate("2014-02-15T08:00:00Z") })
+db.order.insert({ "_id" : 5, "item" : "xyz", "price" : 5, "quantity" : 10, "date" : ISODate("2014-02-15T09:05:00Z") })
+
+
+
+db.order.aggregate(
+   [
+     {
+       $group:
+         {
+           _id: "$item",
+           maxTotalAmount: { $max: { $multiply: [ "$price", "$quantity" ] } },
+           maxQuantity: { $max: "$quantity" }
+         }
+     }
+   ]
+)
+
+Pipeline
+return city with pop more than 10 million
+
+db.demo.aggregate({$group:
+                      { _id:"$state",totoalPop:[$sum:"$pop}}},
+                    {$match:{totalPop:{$gte:10*1000}}})
+
+return avg city
+
+db.demo.aggregate{{$group:{_id:{state:"$state",city:"$city"},
+                             pop:{$sum:"$pop}}},
+                           {$group:{
+                        _id:"$_id.state", avgCityPop:{$avg:$pop"}}})
+

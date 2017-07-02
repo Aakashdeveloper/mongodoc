@@ -1,0 +1,88 @@
+//Replica
+mongod --port 2001 --dbpath D:\mongodb\class1 --replSet --aakash --oplogSize 128
+mongod --port 2002 --dbpath D:\mongodb\class2 --replSet --aakash --oplogSize 128
+mongod --port 2003 --dbpath D:\mongodb\class3 --replSet --aakash --oplogSize 128
+
+mongo --port 2001
+mongo --port 2002
+mongo --port 2003
+show dbs
+
+// this goes when you have ip problem
+mongod --port 2001 --dbpath /mongodb/class1 --replSet --aakash --bind_ip 10.0
+
+//this is run over primary
+rs.help
+rs.help()
+rs.status()
+rs.initiate()
+rs.add("AAKASH:2002")
+// primary^^^
+
+//Run over secondy to allow replication
+db.getMongo().setSlaveOk()
+
+
+rs.add({_id:4, host:"AAKASH:27017", priority:0, hidden: true});
+rs.addArb("AAKASH:3001")
+rs.remove()
+
+/*************Sharding***********************/
+
+1--> 3 shards (3 directories to store datafiles)
+2--> 3 config server (3 directories to store datafiles)
+3--> 1 query router (mongos)
+
+4--> configure (add shards)
+
+
+//Sharding server
+mongod --shardsvr --dbpath D:\shard\shard1  --port 2001 
+
+mongod --shardsvr --dbpath D:\shard\shard2 --port 2002 
+
+mongod --shardsvr --dbpath D:\shard\shard3 --port 2003
+
+//Config Server
+
+mongod --configsvr --dbpath D:\config\config1 --port 2011
+mongod --configsvr --dbpath D:\config\config2 --port 2012
+mongod --configsvr --dbpath D:\config\config3 --port 2013
+
+//configdb=configrs/192.168.0.105:2011,192.168.0.105:2012,192.168.0.105:2013
+//port=1000
+//logpath= C:/Users/AAKASH/Desktop/mongos3.log
+//logappend=true
+
+//mongos
+//mongos --port 1000 --configdb 192.168.0.105:2011,192.168.0.105:2012,192.168.0.105:2013
+
+mongos --port 1000 --configdb 127.0.0.1:2011,127.0.0.1:2012,127.0.0.1:2013
+
+mongo --port 1000
+
+//Add shards
+sh.addShard("localhost:2001")
+sh.addShard("localhost:2002")
+sh.addShard("localhost:2003")
+
+show dbs
+use config
+show collections
+db.shards.find()
+
+
+
+use mongoMart2
+
+sh.enableSharding("mongoMart2")
+
+//enable on collection level
+sh.shardCollection("mongoMart2.shop1",{"_id":"hashed"})
+for (var i =1;i<=10;i++)db.shop1.insert({x:i})
+
+//remove shard
+use admin
+db.runCommand({removeShard: "localhost:2001"})
+
+

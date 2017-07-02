@@ -1,0 +1,239 @@
+db.products.insert({'name':'iPad 16GB Wifi', 'manufacturer':"Apple", 
+		    'category':'Tablets', 
+		    'price':499.00})
+db.products.insert({'name':'iPad 32GB Wifi', 'category':'Tablets', 
+		    'manufacturer':"Apple", 
+		    'price':599.00})
+db.products.insert({'name':'iPad 64GB Wifi', 'category':'Tablets', 
+		    'manufacturer':"Apple", 
+		    'price':699.00})
+db.products.insert({'name':'Galaxy S3', 'category':'Cell Phones', 
+		    'manufacturer':'Samsung',
+		    'price':563.99})
+db.products.insert({'name':'Galaxy Tab 10', 'category':'Tablets', 
+		    'manufacturer':'Samsung',
+		    'price':450.99})
+db.products.insert({'name':'Vaio', 'category':'Laptops', 
+		    'manufacturer':"Sony", 
+		    'price':499.00})
+db.products.insert({'name':'Macbook Air 13inch', 'category':'Laptops', 
+		    'manufacturer':"Apple", 
+		    'price':499.00})
+db.products.insert({'name':'Nexus 7', 'category':'Tablets', 
+		    'manufacturer':"Google", 
+		    'price':199.00})
+db.products.insert({'name':'Kindle Paper White', 'category':'Tablets', 
+		    'manufacturer':"Amazon", 
+		    'price':129.00})
+db.products.insert({'name':'Kindle Fire', 'category':'Tablets', 
+		    'manufacturer':"Amazon", 
+		    'price':199.00})
+
+/****First aggregate Querry****Count of each manufacturer********/
+db.products.aggregate([
+        {$group:
+          {
+             _id:"$manufacturer",
+             num_products:{$sum:1}
+           }
+         }
+]).pretty()
+
+
+
+/***Agrregation Pipeline******************/
+
+Collection->$project->$match->$group->$sort->Result
+
+
+$project:  reshape the document
+$match: Filter step
+$group: aggregate(sum, avg,count etc)
+$sort: sorting the document
+$skip:  Skip documents
+$limit: limit number of document 
+$unwind: Normalize tag  /*
+       tags:["red","blue","green"]
+        tag:"red",
+        tag:"blue",
+        tag:"green"  */
+
+$out: output 
+
+
+/***************Count of manufacturer with category/
+
+
+db.products.aggregate([
+        {$group:
+          {
+             _id:{ "manufacturer":"$manufacturer",
+                   "category":"$category"
+                  },
+             num_products:{$sum:1}
+           }
+         }
+]).pretty()
+
+/*** Id can have values***************/
+
+db.foo.insert({_id:{name:"aakash",class:"7module"}, hometown:"IND"})
+
+/****using sum operator **********/
+
+db.products.aggregate([
+        {$group:
+          {
+             _id:{"manufacturer":"$manufacturer"},
+             avg_price:{$avg:"$price"}
+           }
+         }
+])
+
+/****Using avg function  ****************/
+
+db.products.aggregate([
+        {$group:
+          {
+             _id:{"manufacturer":"$manufacturer"},
+             avg_price:{$avg:"$price"}
+           }
+         }
+])
+
+/****Addto set ****************/
+db.products.aggregate([
+        {$group:
+          {
+             _id:{"manufacturer":"$manufacturer"},
+             categories:{$addToSet:"$category"}
+           }
+         }
+])
+
+/***********Push function **************/
+db.products.aggregate([
+        {$group:
+          {
+             _id:{"manufacturer":"$manufacturer"},
+             categories:{$push:"$category"}
+           }
+         }
+])
+
+
+/***********Max function **************/
+db.products.aggregate([
+        {$group:
+          {
+             _id:{"manufacturer":"$manufacturer"},
+             maxPrice:{$max:"$price"}
+           }
+         }
+]) 
+
+
+/**********$project **********************/
+db.products.aggregate([
+        {$project:
+           {
+              _id:0,
+              'maker':{$toLower: "$manufacturer"},
+              'details':{'category':"$category",
+                          'price':{"$multiply":["$price",10]}
+                         },
+               'item':'$name'
+            }
+         }
+])
+
+
+ db.city.count({city:"CHICOPEE"})
+ db.city.distinct("state")
+ db.city.distinct("city").length
+/***********$match****************/
+db.city.aggregate([
+    {$match:
+      {
+         state:"CA"
+      }
+    }
+
+])
+
+
+/**************$match with $group********/
+db.city.aggregate([
+    {$match:
+      {
+         state:"CA"
+      }
+    },
+    {$group:
+      {
+        _id: "$city",
+        population: {$sum: "$pop"},
+        zip_codes: {$addToSet: "$_id"}
+      }
+    }
+])
+       
+/**************$match with $group and $project********/
+
+db.city.aggregate([
+    {$match:
+      {
+         state:"CA"
+      }
+    },
+    {$group:
+      {
+        _id: "$city",
+        population: {$sum: "$pop"},
+        zip_codes: {$addToSet: "$_id"}
+      }
+    },
+     {$project:
+      {
+        _id: 0,
+        city: "$_id",
+        population: 1,
+        zip_codes: 1
+      }
+    }
+
+])
+
+
+/**************$match with $group and $project add sort to this********/
+
+db.city.aggregate([
+    {$match:
+      {
+         state:"CA"
+      }
+    },
+    {$group:
+      {
+        _id: "$city",
+        population: {$sum: "$pop"},
+        zip_codes: {$addToSet: "$_id"}
+      }
+    },
+     {$project:
+      {
+        _id: 0,
+        city: "$_id",
+        population:{$gt:["population",20]},
+        zip_codes: 1
+      }
+    },
+     {$sort:
+      {
+        population: 1
+      }
+    },
+    {$skip: 10},
+    {$limit: 5}
+
+])

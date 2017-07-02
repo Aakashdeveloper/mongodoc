@@ -1,0 +1,98 @@
+//index
+shar1
+db.emp.insert({emp_id:1002,name:"rahul",lastname:"sharma",email:"rahulh@google.com",phone:9874561237,Job_id:'E3',sal:80000,manager_id:'102'})
+db.emp.insert({emp_id:1003,name:"ankit",lastname:"bajpai",email:"ankit@google.com",phone:98526173364,Job_id:'E4',sal:70000,manager_id:'103'})
+db.emp.insert({emp_id:1004,name:"swati",lastname:"singla",email:"ankit@google.com",phone:974526173364,Job_id:'E4',sal:60000,manager_id:'104',arr:['a','b','c','d']})
+db.emp.insert({emp_id:1002,name:"rahul",lastname:"sharma",email:"rahulh@google.com",phone:9874561237,Job_id:'E3',sal:80000,manager_id:'102'})
+db.emp.insert({emp_id:1003,name:"ankit",lastname:"bajpai",email:"ankit@google.com",phone:98526173364,Job_id:'E4',sal:70000,manager_id:'103'})
+
+
+
+shard3
+db.emp.insert({emp_id:1004,name:"swati",lastname:"singla",email:"ankit@google.com",phone:974526173364,Job_id:'E4',sal:60000,manager_id:'104',arr:['a','b','c','d']})
+db.emp.insert({emp_id:1002,name:"rahul",lastname:"sharma",email:"rahulh@google.com",phone:9874561237,Job_id:'E3',sal:80000,manager_id:'102'})
+db.emp.insert({emp_id:1003,name:"ankit",lastname:"bajpai",email:"ankit@google.com",phone:98526173364,Job_id:'E4',sal:70000,manager_id:'103'})
+db.emp.insert({emp_id:1004,name:"swati",lastname:"singla",email:"ankit@google.com",phone:974526173364,Job_id:'E4',sal:60000,manager_id:'104',arr:['a','b','c','d']})
+
+
+
+
+
+//check index
+
+db.emp.getIndexes()
+ db.emp.getIndexKeys(
+ db.emp.getIndexSpecs(
+db.emp.getIndexes(
+db.emp.getIndices()
+
+//Create indexes
+db.emp.ensureIndex()
+db.emp.createIndex({"phone":1})
+//
+db.emp.ensureIndex({"phone":1},{unique:true})
+
+db.emp.dropIndexes({"phone":1})
+
+
+db.emp.createIndex({"phone":1},{name:'firstindex'})
+
+
+db.emp.createIndex({"phone":1,"email":1},{name:'firstindex'})
+
+db.emp.createIndex({"arr":1})
+
+db.emp.ensureIndex({name:"hashed"})
+
+//
+db.emp.ensureIndex({"phone":1},{unique:true, sparse:true})
+
+//Text index
+db.article.insert([{"text":"ind11ia with cricket","tags":["ind12ia","cricket"]},{"text":"economy of india","tags":["economy","india"]},{"text":"nature and beatuy of himalays","tags":["himalays","nature"]},{"text":"beauty of india","tags":["beauty","ind"]}])
+db.article.ensureIndex({text:"text"})
+db.article.find({$text:{$search:"india"}})
+
+db.article.find({tags:{$regex:"ind"}}).pretty()
+db.article.find({tags:{$regex:"beauty"}}).pretty()
+
+db.places.insert({loc:{type:"Point", coordinates:[-45.97,40.77]}, name:"citypark", cat:"park"});
+
+db.places.insert({"name":"mobile","type":"elec","location":[40.232,-74.343]})
+db.places.insert({"name":"tv","type":"elec","location":[50.232,-84.343]})
+db.places.insert({"name":"cloths","type":"cloths","location":[60.232,-94.343]})
+
+db.places.ensureIndex({location: '2d',type:1})
+db.places.find({location:{$near:[50,50]}})
+
+db.places.find({
+location:{$near:{$geometry: {type: “Point”,coordinates: [-122.166, 37.34]},
+$maxDistance :2000}}}).pretty()
+
+
+/****/db.emp.ensureIndex({"phone":1},{unique:true, dropDups:true})
+
+//TTl Indexes
+
+
+db.emp.createIndex({"phone":1},{expireAfterSeconds:3600})
+
+/*** build index in background*****/
+ db.emp.ensureIndex({"phone":1},{background:true})
+
+db.emp.reIndex({"phone":1})
+
+db.price.find().forEach(
+    function (newPrice) {
+        newPrice.product = db.product.findOne( { "product_id": newPrice.product_id } );
+        db.final.insert(newPrice);
+    }
+);
+
+{ "_id" : ObjectId("571f2c9d74bfa476dcbf7455"), "price" : 100, "product_id" : 1, "product" : { "_id" : ObjectId("571f2c6
+074bfa476dcbf7453"), "name" : "apple", "product_id" : 1 } }
+
+
+
+
+{ "_id" : ObjectId("571f2ca874bfa476dcbf7456"), "price" : 50, "product_id" : 2, "product" : { "_id" : ObjectId("571f2c6e
+74bfa476dcbf7454"), "name" : "mango", "product_id" : 2 } }

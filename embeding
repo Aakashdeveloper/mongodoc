@@ -1,0 +1,27 @@
+db.first.insert({
+    name:"Rahul",
+    fname:"rahul"
+
+    age:20,
+    emailid:{personal:"rahul@gmail.com",proffesional:"rahul@google.com"},
+    job:[
+          {jobid:123,jobdetail:"software engg"},
+          {joblocation:"delhi"}
+        ],
+    department:
+    {
+       department_id:10,
+       department_name:{
+         current_dept:"tech",
+         location:{
+            location_id:"in",
+            state:"delhi"
+
+         }
+       }
+    }
+
+})
+
+
+db.first.find({},{department:1})

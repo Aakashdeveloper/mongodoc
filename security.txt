@@ -1,0 +1,32 @@
+mongod
+
+>show dbs
+>use admin
+
+db.createUser({
+	user:"siteUserAdmin",
+	pwd:"password",
+roles:[{role:"userAdminAnyDatabase",db:"admin"}]
+})
+>show collections
+>db.system.users.find().pretty()
+
+mongo -u "siteUserAdmin" -p "password" --authenticationDatabase "admin"
+
+
+use aggregate
+db.createUser({
+	user:"recordUserAdmin",
+	pwd:"password",
+	roles:[{role:"userAdmin",db:"aggregate"}]
+})
+
+db.createUser({
+	user:"user1",
+	pwd:"password",
+	roles:[{role:"readWrite",db:"aggregate"},
+	{role:"read", db:"test"}]
+})
+
+
+
