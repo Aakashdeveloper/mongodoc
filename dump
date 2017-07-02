@@ -1,0 +1,30 @@
+ar schematodo = db.tasks.findOne();
+> for (var key in schematodo) { print (key) ; }
+_id
+label
+content
+
+for(var i = 1; i<=100; i++) db.student.insert({x:1})
+
+mongodump -o
+
+mongodump --db  nameofdb --c colllection name
+
+mongorestore
+
+mongod --dbpath
+
+mongo --config path of file
+
+db.serverStatus() 
+
+db.stats()
+
+mongostat
+
+mongod --httpinterface --rest
+
+/***grid fs**********/
+
+
+mongofiles.exe -d video1 put  pat
